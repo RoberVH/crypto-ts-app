@@ -3,7 +3,7 @@
 import React, { useState} from 'react'
 
 interface InputAreaProps {
-    calculeHash: (value:string) => void // Ajusta la firma de la función según sea necesario
+    calculeHash: (value:string) => void 
   }
 
 
@@ -14,7 +14,7 @@ const InputArea: React.FC<InputAreaProps> =({calculeHash}) => {
     return (
         
         <textarea
-            className="border  p-4 w-[80rem] h-48"
+            className="border  p-4 w-[40rem] w-full  md:w-[80rem]  h-48"
             placeholder="Introduce tu texto aquí"
             onChange={(e) => calculeHash(e.currentTarget.value)}
         />

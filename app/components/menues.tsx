@@ -24,7 +24,7 @@ const menues: Menu[]  = [
         },
         { 
             menu: 'Firma',
-            path: '/hash'
+            path: '/funciones/firma'
         }
     ]
     },
