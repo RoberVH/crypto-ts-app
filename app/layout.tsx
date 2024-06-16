@@ -2,6 +2,9 @@
 import { inter } from '@/app/ui/fonts'
 import "./globals.css";
 import  Header from '@/app/components/header'
+import { ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+
 
 
 export const metadata = {
@@ -14,6 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={inter.className}>
          <Header/>
+         <ToastContainer />
         {children}
         </body>
     </html>

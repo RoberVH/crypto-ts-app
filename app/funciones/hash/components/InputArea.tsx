@@ -15,7 +15,7 @@ const InputArea: React.FC<InputAreaProps> =({calculeHash}) => {
         
         <textarea
             className="border  p-4 w-[40rem] w-full  md:w-[80rem]  h-48"
-            placeholder="Introduce tu texto aquí"
+            placeholder="Introduce tu texto aquí para obtener su hash"
             onChange={(e) => calculeHash(e.currentTarget.value)}
         />
         

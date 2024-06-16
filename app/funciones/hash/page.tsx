@@ -23,18 +23,15 @@ export default function() {
         const hexValue = toBytes(input)
         const hash= keccak256(hexValue)
         setHash(hash)
-
-
-
     }
 
 
     return (
-        <div className = "flex flex-col  my-16 ml-8">
+        <div className = "flex flex-col  my-16 ml-8 border border-slate-300 p-4 mx-4 rounded-md">
             <InputArea calculeHash={calculeHash} />
-            <div className="flex items-center space-x-8 mt-8 text-slate-400">
+            <div className="flex items-center space-x-8 mt-8 text-slate-500 ">
                 <p>HASH:</p>
-                <p className={`${spacemono.className}  border w-[10rem] md:w-[45rem] h-12 break-words`}>
+                <p className={`${spacemono.className}  border w-[10rem] md:w-[45rem] h-12 break-words  flex items-center justify-center`} >
                     {hash}
                 </p>
 

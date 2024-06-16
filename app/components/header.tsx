@@ -13,7 +13,10 @@ export default function Header() {
                     className="ml-8"
                 />
                 <h1 className="hidden sm:block text-xl mr-16  mb-4 sm:mb-0 text-white">
-                    Introducción a Blockchain
+                    <span className="flex space-x-4">
+                    <p>Curso: </p>
+                    <p className="text-[]">Introducción a Blockchain</p>
+                    </span>
                 </h1>
             </div>
             <div>
