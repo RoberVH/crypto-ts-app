@@ -7,7 +7,7 @@ import { spacemono } from '@/app/ui/fonts'
 
 
 
-export default function() {
+export default function HashPage() {
     const [hash, setHash] = useState<string>('')
 
     

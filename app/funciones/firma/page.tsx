@@ -10,7 +10,7 @@ import { TableRow } from "@/app/lib/globalTypes";
 import PairTitleText from "@/app/ui/pairTitleText";
 import WaitModal from "@/app/ui/waitModal";
 
-export default function () {
+export default function FirmaPage() {
   const [signHistory, setSignHistory] = useState<TableRow[]>([]);
   const [userFile, setUserFile] = useState<File | null>(null);
   const [hash, setHash] = useState<string>("");
