@@ -19,7 +19,7 @@ const Upload: React.FC<UploadProps> =({setUserFile, readUserFile}) => {
         setUserFile(null)
         if (selectedFile) {
             if (selectedFile.size > MAX_SIZE_FILE ) {
-                setError("El archivo no debe superar 100 MB");
+                setError(`El archivo no debe superar 100 MB`);
                 setUserFile(null);
             } else {
                 setError(null);
@@ -32,7 +32,7 @@ const Upload: React.FC<UploadProps> =({setUserFile, readUserFile}) => {
 
     return (
         <div className="flex flex-col space-y-8  p-16 border">
-            <PairTitleText title='Seleccione archivo (menor a 1MB)' text='' />
+            <PairTitleText title='Seleccione archivo (menor a 100 MB)' text='' />
              <input className="border w-[50rem] " type="file" onChange={handleFileChange} />
             {error && <p style={{ color: 'red' }}>{error}</p>}
 
