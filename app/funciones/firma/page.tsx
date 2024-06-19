@@ -1,15 +1,12 @@
 "use client";
-import { createWalletClient, createPublicClient, custom, http } from "viem";
+import { createWalletClient, custom } from "viem";
 import { mainnet } from "viem/chains";
 import { useState } from "react";
-import { SignableMessage, keccak256 } from "viem";
-import { spacemono } from "@/app/ui/fonts";
+import {  keccak256 } from "viem";
 import Upload from "../../ui/upload";
-import { getWalletClient, client } from "@/app/lib/client";
 import { toastError } from "@/app/lib/errormsg";
 import SignatureTable from "./components/signatureTable";
 import { TableRow } from "@/app/lib/globalTypes";
-import { formatDate } from "@/app/lib/utils";
 import PairTitleText from "@/app/ui/pairTitleText";
 import WaitModal from "@/app/ui/waitModal";
 

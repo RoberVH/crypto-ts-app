@@ -4,9 +4,6 @@ import InputArea from './components/InputArea'
 import { keccak256, toBytes  } from 'viem'
 import { spacemono } from '@/app/ui/fonts'
 
-//import {  createPublicClient, http } from 'viem'
-//import { polygonAmoy } from 'viem/chains'
-
 
 
 
