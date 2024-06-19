@@ -27,19 +27,6 @@ const menues: Menu[] = [
       },
     ],
   },
-  {
-    title: "Consenso",
-    items: [
-      {
-        menu: "Mecanismos",
-        path: "/mecanismos",
-      },
-      {
-        menu: "PoW",
-        path: "/PoW",
-      },
-    ],
-  },
 ];
 
 export default function Menues() {
@@ -59,36 +46,66 @@ export default function Menues() {
     router.push(path);
   };
 
+  // return (
+  //   <div className="flex justify-center space-x-8  text-white">
+  //     {menues.map((menu, index) => (
+  //       <div
+  //         id="first-level-menu"
+  //         key={index}
+  //         className="relative"
+  //         onMouseEnter={() => handleMouseEnter(index)}
+  //       >
+  //         <h3 className="cursor-pointer">{menu.title}</h3>
+  //         <ul
+  //           onMouseLeave={handleMouseLeave}
+  //           className={`absolute bg-white shadow-lg mt-2 ${
+  //             visibleMenu === index ? "block" : "hidden"
+  //           }`}
+  //         >
+  //           {menu.items.map((item, idx) => (
+  //             <li key={idx} className="whitespace-nowrap">
+  //               <Link href={item.path}>
+  //                 <button
+  //                   className="block px-4 py-2 text-gray-700 hover:bg-[#FFC000] hover:text-white  cursor-pointer"
+  //                   onClick={() => handleMenueClick(item.path)}
+  //                 >
+  //                   {item.menu}
+  //                 </button>
+  //               </Link>
+  //             </li>
+  //           ))}
+  //         </ul>
+  //       </div>
+  //     ))}
+  //   </div>
+  // );
   return (
-    <div className="flex justify-center space-x-8  text-white">
-      {menues.map((menu, index) => (
-        <div
-          key={index}
-          className="relative"
-          onMouseEnter={() => handleMouseEnter(index)}
+    <div className="flex justify-center space-x-8 text-white">
+    {menues.map((menu, index) => (
+      <div
+        key={index}
+        className="relative group hover:border-b-8" // Agrega la clase 'group' aquí
+        id="first-level-menu"
+      >
+        <h3 className="cursor-pointer">{menu.title}</h3>
+        <ul
+          className={`absolute bg-white shadow-lg mt-2 transition-opacity duration-300 left-1/2 transform -translate-x-1/2 group-hover:opacity-100 group-hover:visible invisible`} // Utiliza group-hover para controlar la visibilidad
         >
-          <h3 className="cursor-pointer">{menu.title}</h3>
-          <ul
-            onMouseLeave={handleMouseLeave}
-            className={`absolute bg-white shadow-lg mt-2 ${
-              visibleMenu === index ? "block" : "hidden"
-            }`}
-          >
-            {menu.items.map((item, idx) => (
-              <li key={idx} className="whitespace-nowrap">
-                <Link href={item.path}>
-                  <button
-                    className="block px-4 py-2 text-gray-700 hover:bg-[#FFC000] hover:text-white  cursor-pointer"
-                    onClick={() => handleMenueClick(item.path)}
-                  >
-                    {item.menu}
-                  </button>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-    </div>
-  );
+          {menu.items.map((item, idx) => (
+            <li key={idx} className="whitespace-nowrap">
+              <Link href={item.path}>
+                <button
+                  className="block px-4 py-2 text-gray-700 hover:bg-[#FFC000] hover:text-white cursor-pointer"
+                  onClick={() => handleMenueClick(item.path)}
+                >
+                  {item.menu}
+                </button>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+  )
 }

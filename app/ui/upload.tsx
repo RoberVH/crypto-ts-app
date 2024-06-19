@@ -1,5 +1,6 @@
 import React, { useState} from 'react'
 import PairTitleText from './pairTitleText';
+import { MAX_SIZE_FILE } from '../lib/utils';
 
 
 interface UploadProps {
@@ -17,8 +18,8 @@ const Upload: React.FC<UploadProps> =({setUserFile, readUserFile}) => {
         setError(null)
         setUserFile(null)
         if (selectedFile) {
-            if (selectedFile.size > 250 * 1024 * 1024 * 1024 *1024 ) {
-                setError("El archivo no debe superar 250 MB");
+            if (selectedFile.size > MAX_SIZE_FILE ) {
+                setError("El archivo no debe superar 100 MB");
                 setUserFile(null);
             } else {
                 setError(null);
