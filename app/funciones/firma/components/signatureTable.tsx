@@ -25,8 +25,8 @@ const SignatureTable: React.FC<TableProps> = ({ data }) => {
         <tbody className="block md:table-row-group text-sm">
           {data.map((row, index) => (
             <tr key={index} className="border-b border-gray-200 block md:table-row">
-              <td className="p-2 md:table-cell wrap" style={{ maxWidth: '100px'}}>{row.fileName}</td>
-              <td className={`${spacemono.className} p-2 md:table-cell`}>{row.signature}</td>
+              <td className="p-2 mr-2 md:table-cell overflow-hidden overflow-ellipsis whitespace-nowrap" style={{ maxWidth: '100px'}} title={row.fileName + ''}>{row.fileName}</td>
+              <td className={`${spacemono.className} p-2 md:table-cell`} title={`${row.signature.slice(0, 8)}...${row.signature.slice(-10)}`}>{row.signature}</td>
             </tr>
           ))}
         </tbody>

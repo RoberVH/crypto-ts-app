@@ -17,7 +17,7 @@ const Upload: React.FC<UploadProps> =({setUserFile, readUserFile}) => {
         setError(null)
         setUserFile(null)
         if (selectedFile) {
-            if (selectedFile.size > 250 * 1024 * 1024  ) {
+            if (selectedFile.size > 250 * 1024 * 1024 * 1024 *1024 ) {
                 setError("El archivo no debe superar 250 MB");
                 setUserFile(null);
             } else {

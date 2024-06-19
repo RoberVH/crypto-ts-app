@@ -1,75 +1,96 @@
-'use client';
-import { useState } from 'react'
-import { SignableMessage, keccak256  } from 'viem'
-import { spacemono } from '@/app/ui/fonts'
-import Upload from '../../ui/upload'
-import { walletClient} from '@/app/lib/client'
-import { toastError } from '@/app/lib/errormsg';
-import SignatureTable from './components/signatureTable';
-import { TableRow } from '@/app/lib/globalTypes'
-import { formatDate } from '@/app/lib/utils';
-import PairTitleText from '@/app/ui/pairTitleText';
-
-
+"use client";
+import { createWalletClient, createPublicClient, custom, http } from "viem";
+import { mainnet } from "viem/chains";
+import { useState } from "react";
+import { SignableMessage, keccak256 } from "viem";
+import { spacemono } from "@/app/ui/fonts";
+import Upload from "../../ui/upload";
+import { getWalletClient, client } from "@/app/lib/client";
+import { toastError } from "@/app/lib/errormsg";
+import SignatureTable from "./components/signatureTable";
+import { TableRow } from "@/app/lib/globalTypes";
+import { formatDate } from "@/app/lib/utils";
+import PairTitleText from "@/app/ui/pairTitleText";
+import WaitModal from "@/app/ui/waitModal";
 
 export default function () {
+  const [signHistory, setSignHistory] = useState<TableRow[]>([]);
+  const [userFile, setUserFile] = useState<File | null>(null);
+  const [hash, setHash] = useState<string>("");
+  const [busy, setBusy] = useState<Boolean>(false);
 
-    const [signHistory, setSignHistory] = useState <TableRow[]>([])
-    const [userFile, setUserFile] = useState<File | null>(null)
-    const [hash, setHash] = useState<string>('')
-    
-    const readUserFile = async (file:File) => {
-        console.log('Recibido, procesando:', file.name)
-        if (file) {
-          try {
-            const arrayBuffer = await file.arrayBuffer();
-            const hash= keccak256(new Uint8Array(arrayBuffer))
-            setHash(hash);
-            console.log('hash puesto a', hash)
-          } catch (error) {
-            console.error('Error calculating hash:', error);
-          } finally {
-          }
-        }}
+  const readUserFile = async (file: File) => {
+    console.log("Recibido, procesando:", file.name);
+    if (file) {
+      try {
+        setBusy(true);
+        const arrayBuffer = await file.arrayBuffer();
+        const hash = keccak256(new Uint8Array(arrayBuffer));
+        setHash(hash);
+        console.log("hash puesto a", hash);
+      } catch (error) {
+        console.error("Error calculating hash:", error);
+      } finally {
+        setBusy(false);
+      }
+    }
+  };
 
+  const firmar = async () => {
+    let walletClient, account;
+    try {
+      if (window.ethereum) {
+        [account] = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+        walletClient = createWalletClient({
+          account,
+          chain: mainnet,
+          transport: custom(window.ethereum),
+        });
+      } else walletClient = undefined;
+      if (!walletClient) {
+        toastError("Necesita instalar Billetera para firmar");
+        return;
+      }
+      if (userFile) {
+        const signature = await walletClient.signMessage({
+          account,
+          message: hash,
+        });
+        setSignHistory((previous) => [
+          ...previous,
+          { fileName: userFile.name, hash: hash, signature: signature },
+        ]);
+      }
+    } catch (error: any) {
+      console.log("[Error]:", error);
+      toastError(error.message);
+    }
+  };
 
-    const firmar = async () => {
-        if (!walletClient) {
-            toastError('Necesita instalar Billetera para firmar')
-            return
-        }
-        if (userFile) {
-            
-            try {
-                 const [account] = await walletClient.getAddresses()
-                 console.log('account', account)
-                const signature = await walletClient.signMessage({account, message: hash});
-                setSignHistory((previous) => [...previous, {fileName: userFile.name, hash: hash,signature: signature}])
-            } catch (error:any) {
-                toastError(error.message)
-            }
-    }}
-
-
-    return (
-        <div className="  mt-4  mx-8 text-stone-500">
-            <div className="h-max-32">
-                <Upload setUserFile={setUserFile} readUserFile={readUserFile}/>
-            </div>
-            {userFile && 
-            <div className="mt-8 flex space-x-8 border p-2">
-                <PairTitleText title='Nombre:' text={userFile.name} />
-                <button className="button-command-small" onClick={firmar}>Firmar</button>
-            </div>
-            }
-            {Boolean(signHistory.length) &&
-                <div className="p-4">
-                    <SignatureTable data={signHistory} />
-                </div>
-            }
-
+  return (
+    <div className="  mt-4  mx-8 text-stone-500">
+      {busy && <WaitModal message="Obteniendo hash del archivo" />}
+      <div className="h-max-32">
+        <Upload setUserFile={setUserFile} readUserFile={readUserFile} />
+      </div>
+      {userFile && (
+        <div className="mt-8 flex space-x-8 border p-2">
+          <div className="flex flex-col">
+            <PairTitleText title="Nombre:" text={userFile.name} />
+            <PairTitleText title="Hash:" text={hash} />
+          </div>
+          <button className="button-command-small" onClick={firmar}>
+            Firmar
+          </button>
         </div>
-    )
+      )}
+      {Boolean(signHistory.length) && (
+        <div className="p-4">
+          <SignatureTable data={signHistory} />
+        </div>
+      )}
+    </div>
+  );
 }
-
-
