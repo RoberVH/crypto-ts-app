@@ -1,4 +1,4 @@
-import React, { useState} from 'react'
+import React, { useState } from 'react'
 import PairTitleText from './pairTitleText';
 import { MAX_SIZE_FILE } from '../lib/utils';
 
@@ -9,12 +9,10 @@ interface UploadProps {
   }
 
 const Upload: React.FC<UploadProps> =({setUserFile, readUserFile}) => {
-   // const [file, setFile] = useState<File | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = e.target.files ? e.target.files[0] : null;
-       // setFile(null)
         setError(null)
         setUserFile(null)
         if (selectedFile) {
@@ -27,6 +25,7 @@ const Upload: React.FC<UploadProps> =({setUserFile, readUserFile}) => {
                 readUserFile(selectedFile)
             }
         }
+        e.target.value = '';
     };
 
 
