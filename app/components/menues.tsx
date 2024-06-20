@@ -25,6 +25,15 @@ const menues: Menu[] = [
       },
     ],
   },
+  {
+    title: "Consenso",
+    items: [
+      {
+        menu: "PoW",
+        path: "/consenso/pow",
+      },
+    ],
+  },
 ];
 
 export default function Menues() {
