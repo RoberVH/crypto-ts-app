@@ -25,7 +25,7 @@ const menues: Menu[] = [
       },
     ],
   },
-  {
+    {
     title: "Consenso",
     items: [
       {
@@ -34,6 +34,15 @@ const menues: Menu[] = [
       },
     ],
   },
+  {
+    title: "Contrato",
+    items: [
+      {
+        menu: "Trivias",
+        path: "/contrato/trivias",
+      },
+    ],
+  }
 ];
 
 export default function Menues() {

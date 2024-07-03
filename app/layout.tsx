@@ -1,6 +1,6 @@
 
 import { inter } from '@/app/ui/fonts'
-import "./globals.css";
+import "@/app/globals.css";
 import  Header from '@/app/components/header'
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
