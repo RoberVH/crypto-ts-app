@@ -17,14 +17,12 @@ export default function FirmaPage() {
   const [busy, setBusy] = useState<Boolean>(false);
 
   const readUserFile = async (file: File) => {
-    console.log("Recibido, procesando:", file.name);
     if (file) {
       try {
         setBusy(true);
         const arrayBuffer = await file.arrayBuffer();
         const hash = keccak256(new Uint8Array(arrayBuffer));
         setHash(hash);
-        console.log("hash puesto a", hash);
       } catch (error) {
         console.error("Error calculating hash:", error);
       } finally {

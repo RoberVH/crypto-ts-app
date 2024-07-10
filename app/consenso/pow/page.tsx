@@ -89,7 +89,6 @@ export default function PoWPage() {
 // 1er try
 //   const getNounce = () => {
 //     let hash2;
-//     console.log('seteando busy a true')
 //     setBusy(true);
 //     for (let i = 0; i <= 1_000_000; i++) {
 //       const pow = input + i.toString();

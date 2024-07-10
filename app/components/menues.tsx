@@ -38,6 +38,10 @@ const menues: Menu[] = [
     title: "Contrato",
     items: [
       {
+        menu: "Fuente",
+        path: "/contrato/fuente",
+      },
+      {
         menu: "Trivias",
         path: "/contrato/trivias",
       },
