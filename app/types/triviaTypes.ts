@@ -21,14 +21,15 @@ export type TriviaType = {
 }
 
 // Array of all  available trivias on DB
-export type TriviasType =  TriviaType[]
+export type TriviasType =  TriviaType[] | []
 
 
 // Array of solved Trivias
 export type solvedTriviasType = number[]
 
 // Valid answers for a Trivia:
-export type OptionAnswerType = 'A' | 'B' | 'C' | 'D'
+export type OptionAnswerType = 'A' | 'B' | 'C' | 'D'| null
 
 // Valid answers Type for Trivias, an array with only option index A to D allowed 
 export type OptionAnswersType = OptionAnswerType[]
+

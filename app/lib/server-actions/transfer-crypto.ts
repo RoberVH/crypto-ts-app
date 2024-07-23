@@ -1,32 +1,50 @@
-"use server";
-import { createWalletClient, http, parseEther } from "viem";
-import { privateKeyToAccount } from "viem/accounts";
-import { sepolia } from "viem/chains";
+'use server'
+import {
+  BaseError,
+  ContractFunctionRevertedError,
+  createWalletClient,
+  http,
+} from 'viem'
+import { privateKeyToAccount } from 'viem/accounts'
 
-type TransferSucces = {success: true, hash: string}
-type TransferFail = {success: false, error: string}
-type TransferFunction = TransferSucces | TransferFail
+import { publicClient } from '@/app/lib/client'
 
-const client = createWalletClient({
-  chain: sepolia,
-  //transport: http(),
-  transport: http(process.env.ALCHEMY_SEPOLIA_URL) 
-})
+import triviaABI from '@/app/lib/triviaContract.json'
+import { contractAddress } from '@/app/lib/contractAddres'
+import { polygonAmoy } from 'viem/chains'
+import viemErrorProcessing from '../viemErrorProcessing'
+import { TransferFunction } from '@/app/types/web3Types'
 
-export const transferCrypto = async (address: string): Promise<TransferFunction> => {
-  const account = privateKeyToAccount(`0x${process.env.PVTE_ACCOUNT_SERVER}`);
+export const transferCrypto = async (
+  addresstoTransfer: string
+): Promise<TransferFunction> => {
+  const serverAccount = privateKeyToAccount(
+    `0x${process.env.PVTE_ACCOUNT_SERVER}`
+  )
+
+  const walletClient = createWalletClient({
+    account: serverAccount,
+    chain: polygonAmoy,
+    transport: http(process.env.ALCHEMY_AMOY_URL),
+  })
 
   try {
-    const hash = await client.sendTransaction({
-      account,
-      to: address as `0x${string}`,
-      value: parseEther("0.001"),
-    });
-    console.log("hash", hash);
-    return { success: true, hash };
-  } catch (e) {
-    const errorMessage = e instanceof Error ? e.message : String(e);
-    console.log("Error:", errorMessage);
-    return { success: false, error: errorMessage };
+    // first simulate transaction
+    const { request } = await publicClient.simulateContract({
+      account: serverAccount,
+      address: contractAddress,
+      abi: triviaABI,
+      functionName: 'giveFaucet',
+      args: [addresstoTransfer],
+    })
+
+    // all ok, make it real
+    const hash = await walletClient.writeContract(request)
+    // Esperar a que la transacción se confirme
+    const receipt = await publicClient.waitForTransactionReceipt({ hash })
+    return { status: true, hash: receipt.transactionHash }
+  } catch (err) {
+    const result =  viemErrorProcessing(err)
+    return {status: false, error: result}
   }
-};
+}

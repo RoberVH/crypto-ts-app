@@ -2,155 +2,180 @@ import {
   TriviaType,
   OptionAnswerType,
   OptionAnswersType,
-} from "@/app/contrato/trivias/types/triviaTypes";
-import { toastError } from "@/app/lib/errormsg";
-import { Trivias } from "@/app/lib/trivias";
-import {
-  Children,
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
+} from '@/app/types/triviaTypes'
+import { toastError } from '@/app/lib/errormsg'
+import clsx from 'clsx'
+import React, { useEffect, useState } from 'react'
 
-const MAX_QUESTIONS = 5;
-const MAX_ANSWERS = 5;
+const MAX_QUESTIONS = 5
+const MAX_ANSWERS = 5
+type SelectedOptionsType = { [index: number]: OptionAnswerType }
 
 const ShowTrivia = ({
   Trivia,
   handleNextTrivia,
-  assessTrivia,
-  currentTriviaIndex
+  assessTriviaonContract,
+  currentTriviaIndex,
 }: {
-  Trivia: TriviaType;
-  handleNextTrivia: (direction: string) => void;
-  assessTrivia: (selectedOptionsArray: OptionAnswersType[]) => void;
+  Trivia: TriviaType
+  handleNextTrivia: (direction: string) => void
+  assessTriviaonContract: (
+    selectedOptionsArray: OptionAnswersType,
+    indexTrivia: number
+  ) => void
   currentTriviaIndex: number
 }) => {
-  const [currentQuestionIdx, setCurrentQuestion] = useState<number>(0);
-  const [selectedOptions, setSelectedOptions] = useState<OptionAnswersType>([]);
+  const [currentQuestionIdx, setCurrentQuestion] = useState<number>(0)
+  const [selectedOptions, setSelectedOptions] = useState<SelectedOptionsType>(
+    {}
+  )
 
   // When user move from Trivia reset Question Id to first one and clear selected options
   useEffect(() => {
-    setCurrentQuestion(0);
-    setSelectedOptions([]);
-  }, [Trivia.name]);
+    setCurrentQuestion(0)
+    setSelectedOptions([])
+  }, [Trivia.name])
 
   const handleOptionChange = (optionIndex: OptionAnswerType) => {
-    // console.log(
-    //   "%cAnswer: %s %s",
-    //   "color: red;",
-    //   currentQuestionIdx,
-    //   optionIndex
-    // );
     setSelectedOptions({
       ...selectedOptions,
       [currentQuestionIdx]: optionIndex,
-    });
-  };
+    })
+  }
 
   const checkAnswers = async () => {
-    const numberofAnsweredQuestions = Object.keys(selectedOptions).length;
+    const numberofAnsweredQuestions = Object.keys(selectedOptions).length
     if (numberofAnsweredQuestions < MAX_ANSWERS) {
-      toastError(
-        "Incompleto. Necesita contestar todas las preguntas de esta Trivia"
-      );
-      return;
+      toastError('incompleteAnswers')
+      return
     }
-    const options = Array<OptionAnswerType>(MAX_ANSWERS);
+    const answeredOptions: OptionAnswersType = Array(MAX_ANSWERS).fill(null)
+
     Object.keys(selectedOptions).forEach((key) => {
-      const numKey = Number(key);
-      options[numKey] = selectedOptions[numKey];
-    });
-    assessTrivia(options, currentTriviaIndex)
-  };
+      const numKey = Number(key)
+      answeredOptions[numKey] = selectedOptions[numKey] as OptionAnswerType
+    })
+    assessTriviaonContract(answeredOptions, currentTriviaIndex)
+  }
 
   const handleNextQuestion = (direction: string) => {
     switch (direction) {
-      case "back":
-        if (currentQuestionIdx === 0) return;
-        setCurrentQuestion((prev) => prev - 1);
-        break;
-      case "forward":
-        if (!(currentQuestionIdx < MAX_QUESTIONS - 1)) return;
-        setCurrentQuestion((prev) => prev + 1);
+      case 'back':
+        if (currentQuestionIdx === 0) return
+        setCurrentQuestion((prev) => prev - 1)
+        break
+      case 'forward':
+        if (!(currentQuestionIdx < MAX_QUESTIONS - 1)) return
+        setCurrentQuestion((prev) => prev + 1)
     }
-  };
+  }
+
+  function SendTriviaToBlockchainButton() {
+    return (
+      <button className="button-command-small px-2 py-1" onClick={checkAnswers}>
+        Enviar
+      </button>
+    )
+  }
 
   return (
-    <div id="panel-Trivia" className=" bg-stone-300 border-2 border-orange-300">
-      <p className="font-bold text-md text-center bg-blue-200">{currentTriviaIndex + 1}. {Trivia.name}</p>
-      <div className="text-md">
-        <ArrowControls
-          handleMovement={handleNextTrivia}
-          iconLeft="ᐊ"
-          iconRight="ᐅ"
-          tooltipMovement="Trivia"
-        />
-        <p className="px-2">{currentQuestionIdx + 1}. {Trivia.items[currentQuestionIdx].question}</p>
+    <div id="panel-Trivia" className=" flex justify-center">
+      <div className="w-full">
+        <p className=" text-sm text-center mb-4 mt-2">
+          {currentTriviaIndex + 1}. {Trivia.name}
+        </p>
+        <div className="text-md pb-2">
+          <ArrowControls
+            handleMovement={handleNextTrivia}
+            iconLeft="⇠"
+            iconRight="⇢"
+            tooltipMovement="Trivia"
+            addinlClass="text-2xl bg-green-200 rounded-2xl px-2 text-center"
+          />
+        </div>
+        <div className="h-[200px]">
+          <div className="px-2 text-[13px] flex mt-2">
+            <label>{currentQuestionIdx + 1}.</label>
+            <label className="ml-2">
+              {Trivia.items[currentQuestionIdx].question}
+            </label>
+          </div>
+          <div className="flex flex-col my-4 space-y-2 ml-8 text-sm mb-8 ">
+            {Trivia.items[currentQuestionIdx].options.map((item) => (
+              <label
+                key={item.index}
+                className="italic text-sm flex items-start items-center space-x-2"
+              >
+                <input
+                  type="radio"
+                  name={`option-${currentQuestionIdx}`}
+                  value={item.index}
+                  checked={selectedOptions[currentQuestionIdx] === item.index}
+                  onChange={() =>
+                    handleOptionChange(item.index as OptionAnswerType)
+                  }
+                  className="mt-1"
+                />
+                <span className="leading-tight text-xs">
+                  {' '}
+                  {` ${item.index}. ${item.text}`}
+                </span>
+              </label>
+            ))}
+          </div>
+        </div>
+        <div className="mb-4">
+          <ArrowControls
+            handleMovement={handleNextQuestion}
+            iconLeft="←"
+            iconRight="➝"
+            tooltipMovement="Pregunta"
+            addinlClass="text-2xl bg-blue-100 text-green-600 rounded-2xl text-center px-2"
+          >
+            <SendTriviaToBlockchainButton />
+          </ArrowControls>
+        </div>
       </div>
-      <div className="flex flex-col my-4 space-y-2 ml-8">
-        {Trivia.items[currentQuestionIdx].options.map((item) => (
-          <label key={item.index} className="italic text-sm">
-            <input
-              type="radio"
-              name={`option-${currentQuestionIdx}`}
-              value={item.index}
-              checked={selectedOptions[currentQuestionIdx] === item.index}
-              onChange={() =>
-                handleOptionChange(item.index as OptionAnswerType)
-              }
-            />
-            {` ${item.index}. ${item.text}`}
-          </label>
-        ))}
-      </div>
-      <ArrowControls
-        handleMovement={handleNextQuestion}
-        iconLeft="🠔"
-        iconRight="➝"
-        tooltipMovement="Pregunta"
-      />
-      <button className="mt-4 border border-blue-200" onClick={checkAnswers}>
-        Evaluar Respuestas
-      </button>
     </div>
-  );
-};
+  )
+}
 
 function ArrowControls({
   handleMovement,
   iconLeft,
   iconRight,
   tooltipMovement,
+  addinlClass,
+  children,
 }: {
-  handleMovement: (direction: string) => void;
-  iconLeft: string;
-  iconRight: string;
-  tooltipMovement: string;
+  handleMovement: (direction: string) => void
+  iconLeft: string
+  iconRight: string
+  tooltipMovement: string
+  addinlClass: string
+  children?: React.ReactNode
 }) {
   return (
-    <div className="flex justify-between ">
+    <div className="flex justify-between items-center ">
       <button
-        className="pl-4"
-        onClick={() => handleMovement("back")}
+        className={clsx(addinlClass, 'pb-1 ml-4')}
+        onClick={() => handleMovement('back')}
         title={`${tooltipMovement} Anterior`}
       >
-        {" "}
-        {iconLeft}{" "}
+        {' '}
+        {iconLeft}{' '}
       </button>
-
+      {children}
       <button
-        className="pr-4 "
-        onClick={() => handleMovement("forward")}
+        className={clsx(addinlClass, 'pb-1 mr-4 ')}
+        onClick={() => handleMovement('forward')}
         title={`Próxima ${tooltipMovement}`}
       >
-        {" "}
-        {iconRight}{" "}
+        {' '}
+        {iconRight}{' '}
       </button>
     </div>
-  );
+  )
 }
 
-export default ShowTrivia;
+export default ShowTrivia

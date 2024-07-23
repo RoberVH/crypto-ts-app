@@ -57,12 +57,12 @@ export default function Menues() {
     {menues.map((menu, index) => (
       <div
         key={index}
-        className="relative group hover:border-b-8" // Agrega la clase 'group' aquí
+        className="relative group hover:border-b-8 border-[#FFC000]" 
         id="first-level-menu"
       >
         <h3 className="cursor-pointer">{menu.title}</h3>
         <ul
-          className={`absolute bg-white shadow-lg mt-2 transition-opacity duration-300 left-1/2 transform -translate-x-1/2 group-hover:opacity-100 group-hover:visible invisible`} // Utiliza group-hover para controlar la visibilidad
+          className={`absolute bg-white shadow-lg mt-2 transition-opacity duration-300 left-1/2 transform -translate-x-1/2 group-hover:opacity-100 group-hover:visible invisible`} 
         >
           {menu.items.map((item, idx) => (
             <li key={idx} className="whitespace-nowrap">

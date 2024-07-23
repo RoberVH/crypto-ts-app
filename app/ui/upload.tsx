@@ -30,9 +30,9 @@ const Upload: React.FC<UploadProps> =({setUserFile, readUserFile}) => {
 
 
     return (
-        <div className="flex flex-col space-y-8  p-16 border">
+        <div className="flex flex-col space-y-8  p-16 border w-[450px] md:w-[900px]">
             <PairTitleText title='Seleccione archivo (menor a 100 MB)' text='' />
-             <input className="border w-[50rem] " type="file" onChange={handleFileChange} />
+             <input className=" text-xs border w-[350px] md:w-[600px]" type="file" onChange={handleFileChange} />
             {error && <p style={{ color: 'red' }}>{error}</p>}
 
         </div>

@@ -14,7 +14,7 @@ const InputArea: React.FC<InputAreaProps> =({calculeHash}) => {
     return (
         
         <textarea
-            className="border  p-4 w-[40rem] w-full  md:w-[80rem]  h-48"
+            className="border border-blue-600  p-4 w-[40rem] w-full   w-[300px] md:w-[900px]  h-48 rounded-md"
             placeholder="Texto del Bloque"
             onChange={(e) => calculeHash(e.currentTarget.value)}
         />

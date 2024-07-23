@@ -18,7 +18,7 @@ export default function HashPage() {
   };
 
   return (
-    <div className="flex flex-col  my-16 ml-8 border border-slate-300 p-4 mx-4 rounded-md">
+    <div className="flex flex-col  my-16 ml-8 border border-slate-300 p-4 mx-4 rounded-md shadow-md">
       <InputArea calculeHash={calculeHash} />
       <div className="flex items-center space-x-8 mt-8 text-slate-500 ">
         <p className="font-bold">HASH:</p>

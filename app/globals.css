@@ -11,9 +11,25 @@
   }
 
   .button-command-small {
-    @apply bg-green-400 text-white text-sm font-semibold py-2 px-4 rounded-md transition-all duration-200 ease-in-out;
+    @apply bg-green-400 text-white text-xs font-semibold  px-4 rounded-md transition-all duration-200 ease-in-out;
   }
 
   .button-command-small:active {
     @apply bg-green-500 transform scale-95;
   }
+
+  .button-cancel-small {
+    @apply bg-red-400 text-white text-sm  py-2 px-4 rounded-md transition-all duration-200 ease-in-out;
+  }
+
+  .button-cancel-small:active {
+    @apply bg-red-500 transform scale-95;
+  }
+
+ .button-command-smallblue {
+    @apply bg-blue-400 text-white text-xs  py-2 px-4 rounded-md transition-all duration-200 ease-in-out;
+}
+
+.button-command-smallblue:active {
+  @apply bg-blue-500 transform scale-95;
+}

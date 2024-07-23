@@ -15,7 +15,7 @@ interface TableProps {
 const SignatureTable: React.FC<TableProps> = ({ data }) => {
   return (
     <div className="overflow-x-auto ">
-      <table className="min-w-full border-collapse block md:table">
+      <table className="min-w-full border-collapse block md:table text-xs">
         <thead className="block md:table-header-group">
           <tr className="border-b-2 border-gray-300 block md:table-row">
             <th className="text-left p-2 md:table-cell">Nombre Archivo</th>
@@ -23,7 +23,7 @@ const SignatureTable: React.FC<TableProps> = ({ data }) => {
             <th className="text-left p-2 md:table-cell">Firma</th>
           </tr>
         </thead>
-        <tbody className="block md:table-row-group text-sm">
+        <tbody className="block md:table-row-group text-xs">
           {data.map((row, index) => (
             <tr key={index} className="border-b border-gray-200 block md:table-row">
               <td className="p-2 mr-2 md:table-cell overflow-hidden overflow-ellipsis whitespace-nowrap" style={{ maxWidth: '100px'}} title={row.fileName + ''}>{row.fileName}</td>
