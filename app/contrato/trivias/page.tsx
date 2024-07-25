@@ -19,22 +19,7 @@ export default function PageIndex() {
         handleAccountsChanged(result.account)
         return
       }
-      console.log('error de getWalletAccount', result.error)
       toastError(result.error )
-
-      // if (typeof window !== 'undefined' && window.ethereum) {
-      //   try {
-      //     // Do we have a connected account?
-      //     console.log('solicitando cuenta a billetera')
-      //     const accounts: string[] = await window.ethereum.request({
-      //       method: 'eth_accounts',
-      //     })
-      //     console.log('ya solicitada, la address es:', accounts[0])
-      //     setAccount(accounts[0] || undefined)
-      //   } catch (error) {
-      //     console.error('Error al obtener la cuenta:', error)
-      //   }
-      // }
     }
 
     const handleAccountsChanged = (account: string |  undefined) => {
@@ -58,16 +43,17 @@ export default function PageIndex() {
     }
   }, [])
 
-  // if (!account && !prompt)
-  //   return (
-  //     <div>
-
-  //     </div>
-  //   )
+  if (!account) {
+    return (
+      <div>
+        loading....
+      </div>
+    )
+  }
 
   return (
     <div>
-      <TriviasDisplay address={account} setAddress={setAccount} />
+      <TriviasDisplay address={account}  />
     </div>
   )
 }

@@ -68,10 +68,11 @@ export default function PoWPage() {
           title={hash}
           className={`${
             spacemono.className
-          }    h-[120px] md:h-[32px] text-xs md:text-base rounded-md border w-[10rem] md:w-[45rem] h-12 break-words  flex items-center justify-center ${
+          }    h-[120px] md:h-[32px] text-xs md:text-base rounded-md border w-[10rem] md:w-[45rem] h-12 break-words  flex items-center justify-center pt-1 ${
             hash.slice(2, 6) === '0000' ? 'bg-green-300' : 'bg-red-200'
           }`}
-          value={` ${hash}`}
+          value={` ${hash}`} 
+          readOnly
         />
 
         <button

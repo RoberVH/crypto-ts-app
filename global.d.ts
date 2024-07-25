@@ -9,5 +9,5 @@ declare global {
 type SetterFunction<T> = React.Dispatch<React.SetStateAction<T>>
 }
 
-// Esto es necesario para que TypeScript trate este archivo como un módulo
+// This is necessary for TypeScript to treat this file as a module
 export {}

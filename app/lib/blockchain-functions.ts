@@ -1,20 +1,13 @@
-// Get from contract the array of solved trivias for the specific funtion
-//     // Implementa la lógica para leer del contrato en Polygon
-//     // Retorna un array de IDs de trivias resueltas
-// usando viem ^2.17.4
+/**
+ * Functions in this file use  viem ^2.17.4 and browser native object window.ethereum 
+ */
 
 import {
-  Address,
-  http,
   createWalletClient,
-  Account,
   custom,
   WalletClient,
-  walletActions,
   createPublicClient,
-  PublicClient,
   publicActions,
-   
 } from 'viem'
 import { polygonAmoy } from 'viem/chains'
 
@@ -26,54 +19,45 @@ import {
   ProviderResult,
   errorProvider,
   publicClientTypeResult,
-  AccountResponse
+  AccountResponse,
 } from '@/app/types/web3Types'
 import viemErrorProcessing from './viemErrorProcessing'
 
 
 
-
-
-/****************************testing getting account with only wiem calls *********************************** *********************************** */
-
-
+/**
+ * getWalletAccount
+ *      - check and gets account through only viem methods
+ * @returns object { status: false, error: string } | { status: true, account: address }
+ */
 export const getWalletAccount = async (): Promise<AccountResponse> => {
   try {
-    // Verificar si el proveedor está disponible
+    // Are we on client and is there a provider?
     if (typeof window !== 'undefined' && window.ethereum) {
       const walletClient = createWalletClient({
         chain: polygonAmoy,
-        transport: custom(window.ethereum)
-      });
-
-      // Solicitar acceso a la cuenta
-      console.log('Por solicitar acceso')
-      const [address] = await walletClient.requestAddresses();
-      console.log('Solicitado: address es', address)
+        transport: custom(window.ethereum),
+      })
+      // reqiest account address
+      const [address] = await walletClient.requestAddresses()
       if (address) {
-        return { status: true, account: address };
+        return { status: true, account: address }
       } else {
-        console.log('address era vacio por eso llegue a este error que regresare: ErrorIndeterminado')
-        return { status: false, error: 'ErrorIndeterminado' };
+        return { status: false, error: 'ErrorIndeterminado' }
       }
     } else {
-      return { status: false, error: 'NoWallet' };
+      return { status: false, error: 'NoWallet' }
     }
-  }catch (err) {
-    console.log('error de viemProcessing: ', err)
-    return {status: false, error: viemErrorProcessing(err)}
+  } catch (err) {
+    return { status: false, error: viemErrorProcessing(err) }
   }
 }
 
-/*********************************** *********************************** *********************************** *********************************** */
-
-type WalletClientProvider =
-  | { status: true; wallet: WalletClient }
-  | errorProvider
-
 /**
  * getEthereumProvider
- */
+ *  *      - check and gets account through window.ethereum object
+ * @returns object { status: false, error: string } | { status: true, account: accounts[0] }
+  */
 export const getEthereumProvider = async (): Promise<ProviderResult> => {
   if (typeof window === 'undefined' || !window.ethereum) {
     return {
@@ -106,22 +90,22 @@ export const getEthereumProvider = async (): Promise<ProviderResult> => {
   }
 }
 
-const getPublicClient = (): publicClientTypeResult=> {
-  if (!(typeof window !== 'undefined' && window.ethereum))  return { status: false, error:'NoWallet'}
- try {
-  const  publicClient= createPublicClient({
+const getPublicClient = (): publicClientTypeResult => {
+  if (!(typeof window !== 'undefined' && window.ethereum))
+    return { status: false, error: 'NoWallet' }
+  try {
+    const publicClient = createPublicClient({
       chain: polygonAmoy,
       transport: custom(window.ethereum),
     })
-    if (publicClient) return { status: true, publicClient}
-    return  {status: false, error: 'ErrorIndeterminado'}
-  } catch (err) {  
-     return {status: false, error: viemErrorProcessing(err)}
+    if (publicClient) return { status: true, publicClient }
+    return { status: false, error: 'ErrorIndeterminado' }
+  } catch (err) {
+    return { status: false, error: viemErrorProcessing(err) }
   }
 }
 
-
-export const getSolvedTriviasFromContract = async (address:string) => {
+export const getSolvedTriviasFromContract = async (address: string) => {
   const resultViem = getPublicClient()
   if (!resultViem.status) return { status: false, error: resultViem.error }
   const publicClient = resultViem.publicClient
@@ -135,38 +119,33 @@ export const getSolvedTriviasFromContract = async (address:string) => {
       functionName: 'getUserSolvedTrivias',
       args: [address],
     })
-    console.log('triviaResults', triviaResults)
-    return {status: true, triviasSolved: triviaResults }
+    return { status: true, triviasSolved: triviaResults }
   } catch (error) {
-  const result = viemErrorProcessing(error)
-  console.log('viemProcessingError;', result)
-  return {status: false, error: result}
+    const result = viemErrorProcessing(error)
+    return { status: false, error: result }
   }
 }
 
-export const getTokensTriviasTTS = async (address:string) => {
+export const getTokensTriviasTTS = async (address: string) => {
   const resultViem = getPublicClient()
   if (!resultViem.status) return { status: false, error: resultViem.error }
   const publicClient = resultViem.publicClient
   const contractAbi = triviaABI
 
   try {
-    // Leer del contrato
     const balance = await publicClient.readContract({
       address: contractAddress,
       abi: contractAbi,
       functionName: 'balanceOf',
       args: [address],
     })
-    console.log('balance', balance)
-    return {status: true, balance: balance}
+    return { status: true, balance: balance }
   } catch (error) {
-  const result = viemErrorProcessing(error)
-  console.log('viemProcessingError;', result)
-  return {status: false, error: result}
-
+    const result = viemErrorProcessing(error)
+    return { status: false, error: result }
   }
 }
+
 
 
 /**
@@ -176,45 +155,53 @@ export const getTokensTriviasTTS = async (address:string) => {
  *                      returns {status: true} if all ok   if this account already solved this return error msg 'TriviaAlreadySolved'
  * @param answers string<'A'|'B'|'C'|'D'[]>[]
  * @param triviaIndex number
- * @returns 
+ * @returns
  */
 export const addSolvedTriviaToContract = async (
   answers: OptionAnswersType,
   triviaIndex: number
-): Promise<{status: true} | {status: false, error:string, hash?:string} > => {
-  
+): Promise<
+  { status: true } | { status: false; error: string; hash?: string }
+> => {
   //logic to write to contrat
-  let hash;
+  let hash
   try {
-    const client = createWalletClient({
+    const walletClient = createWalletClient({
       chain: polygonAmoy,
       transport: custom(window.ethereum!),
-    }).extend
-    (publicActions) 
+    }).extend(publicActions)
 
-    const [account] = await client.getAddresses()
-    const proposedSolution= triviaIndex.toString() + answers.join('')
-    
-    const { request } = await client.simulateContract({
+    const [account] = await walletClient.getAddresses()
+    const proposedSolution = triviaIndex.toString() + answers.join('')
+    // Get current  gas values MaxFeePerGas and maxPriorityFeePerGas 15% and increment them because this is a demo on polygonAmoy and we want TX to pass as safely and quickest as it could
+    const { maxFeePerGas, maxPriorityFeePerGas } =   await walletClient.estimateFeesPerGas({ chain: polygonAmoy })
+    console.log('maxFeePerGas, maxPriorityFeePerGas',maxFeePerGas, maxPriorityFeePerGas)
+    const increasedGasEstimate = BigInt(Math.ceil(Number(maxFeePerGas) * 1.15))
+    const increasedMaxPriorityFeePerGas = BigInt( Math.ceil(Number(maxPriorityFeePerGas) * 1.15))
+    // simulate contract op. This will trigger error if there is a problem saving time
+    // Curiously, even tho docs for current 2.17.11 says this function take maxFeePerGas and maxPriorityFeePerGas props, if added cause a bizarre error of contract execution error
+    await walletClient.simulateContract({
       address: contractAddress,
       abi: triviaABI,
       functionName: 'scoreAnswer',
-      args: [ triviaIndex, proposedSolution ],
-      account
+      args: [triviaIndex, proposedSolution],
+      account,
+    })      
+     // all ok, send it away     
+    hash = await walletClient.writeContract(      {
+      address: contractAddress,
+      abi: triviaABI,
+      functionName: 'scoreAnswer',
+      args: [triviaIndex, proposedSolution],
+      account,
+      maxFeePerGas:increasedGasEstimate,
+      maxPriorityFeePerGas:increasedMaxPriorityFeePerGas
     })
-      hash = await client.writeContract(request)
-     console.log('hash', hash)
-     const transaction = await client.waitForTransactionReceipt({ hash })
-     console.log('transaction', transaction)
-     return {status: true}
-    
+      // we'll wait for it, to show users an operation similar to web2 apps
+    const transaction = await walletClient.waitForTransactionReceipt({ hash })
+    return { status: true }
   } catch (error) {
-    console.log('Error em contrato: ', error)
     const errMsg = viemErrorProcessing(error)
-    console.log('err obj', errMsg)
-    console.log('hash', hash)
-    return {status: false, error: errMsg, hash}
-
+    return { status: false, error: errMsg, hash }
   }
 }
-

@@ -59,8 +59,13 @@ export default function FirmaPage() {
         ])
       }
     } catch (error: any) {
-      if (error.name) toastError(error.name)
-      else toastError(error.message)
+      if (error.name) {
+        toastError(error.name)
+        return
+      }
+      if (error.message && error.message.includes('User rejected the request.')){
+        toastError('UserRejectedRequestError')
+      }
     }
   }
 

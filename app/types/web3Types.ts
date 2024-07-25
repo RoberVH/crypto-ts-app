@@ -1,11 +1,5 @@
 import {
   Address,
-  http,
-  createWalletClient,
-  Account,
-  custom,
-  WalletClient,
-  walletActions,
   PublicClient,
 } from 'viem'
 

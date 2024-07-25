@@ -34,7 +34,6 @@ export default function ScoreTrivias({
           getSolvedTriviasFromContract(address),
           getTokensTriviasTTS(address),
         ])
-        console.log('results', results)
         if (results[0].status && results[1].status) {
           updateSolvedTrivias(results[0].triviasSolved as solvedTriviasType)
 
@@ -55,7 +54,7 @@ export default function ScoreTrivias({
   return (
     <div id="score-trivia" className="  h-[80%]">
       <div className="text-xs mt-4 ">
-        <p className="mb-2 text-sm font-semibold mb-4 border-b-2 pl-2">Tu Score:</p>
+        <p className="mb-2 text-sm font-semibold mb-4 border-b-2 pl-2 pb-2 md:pb-4">Tu Score:</p>
       <div className="ml-4">
         <PairTitleText title="Tokens: " text={`${tokens} tokens`} />
         <PairTitleText title="Contrato: " text={contractAddress} />
@@ -78,7 +77,7 @@ export default function ScoreTrivias({
           </div>
         ) : (
           <p className="text-center font-semibold text-red-600">
-            No ha resuelto ninguna aun
+            - Ninguna Trivia resuelta todavía -
           </p>
         )}
         </div>

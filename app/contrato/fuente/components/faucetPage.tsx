@@ -1,50 +1,24 @@
 'use client'
 import { toastError } from '@/app/lib/errormsg'
 
-import { createWalletClient, custom } from 'viem'
-import { polygonAmoy, sepolia } from 'viem/chains'
 import { useState } from 'react'
 import { transferCrypto } from '@/app/lib/server-actions/transfer-crypto'
 import { toastSuccess } from '@/app/lib/successmsg'
 
 import WaitModal from '@/app/ui/waitModal'
+import { getWalletAccount } from '@/app/lib/blockchain-functions'
 
 function FaucetPage() {
   const [userAddress, setUserAddress] = useState<string>('')
   const [processingTx, setPprocessingTx] = useState<boolean>(false)
 
 
-
-  const getAddressforFaucet = async () => {
-    let walletClient, account
-    try {
-      if (window.ethereum) {
-         [account] = await window.ethereum.request({
-          method: 'eth_requestAccounts',
-        })
-        walletClient = createWalletClient({
-          account,
-          chain: polygonAmoy,
-          transport: custom(window.ethereum),
-        })
-      } else  walletClient = undefined
-      if (!walletClient) {
-        return undefined
-      } else  return account
-    } catch (error: any) {
-      console.log('[Error]:', error)
-      toastError(error.message)
-      return undefined
-    }
-  }
-
   const getAccountToSendEthers = async () => {
-    const addressToSend = await getAddressforFaucet()
-    if (typeof addressToSend === 'string') {
-      setUserAddress(addressToSend)
-      return
-    }
-    toastError('NoWallet')
+    const result = await getWalletAccount()
+    if (!result.status) {
+      toastError(result.error)
+    } else  
+        setUserAddress(result.account)
   }
 
   const sendCrypto = async () => {

@@ -1,43 +1,39 @@
 // Function to process an error returned by a viem library function call
-import { BaseError, ContractFunctionRevertedError } from 'viem'
+import { BaseError, ContractFunctionRevertedError, TransactionExecutionError } from 'viem'
 
-// function viemErrorProcessing(err: any) : string{
-//   if (err instanceof BaseError) {
-//     const revertError = err.walk(
-//       (err) => err instanceof ContractFunctionRevertedError
-//     )
-//     if (revertError instanceof ContractFunctionRevertedError) {
-//       const errorName = revertError.data?.errorName ?? ''
-//       // do something with `errorName`
-//       return errorName
-//     }
-//   }
-//   //couldn't determine what error was
-//   return  'ErrorIndeterminado'
-// }
 
 function viemErrorProcessing(err: unknown): string {
   if (err instanceof BaseError) {
-    // treat all instances of ContractFunctionRevertedError
+    // treatment for  ContractFunctionRevertedError errors
     const revertError = err.walk(
       (e) => e instanceof ContractFunctionRevertedError
-    )
+    );
     if (revertError instanceof ContractFunctionRevertedError) {
-      const errorName = revertError.data?.errorName ?? ''
-      return errorName
+      const errorName = revertError.data?.errorName ?? '';
+      return errorName || 'ContractFunctionRevertedError';
     }
 
-    // Other types of error return the name of the error (InsufficientFundsError, WaitForTransactionReceiptTimeoutError, UserRejectedRequestError etc.)
-    return err.constructor.name
+    // tratment for TransactionExecutionError (for example if user reject transaction in metamask)
+    if (err instanceof TransactionExecutionError) {
+      // Si hay una causa, devolver el nombre de la causa
+      if (err.cause instanceof Error) {
+        return err.cause.constructor.name;
+      }
+      // Si no hay causa, devolver TransactionExecutionError
+      return 'TransactionExecutionError';
+    }
+
+    // other  BaseError type of errors
+    return err.constructor.name;
   }
 
-  // Not instance of BaseError? return the name instance
+  // if not a BaseError tpye them check for regular error
   if (err instanceof Error) {
-    return err.name
+    return err.name;
   }
 
-  // For everithing else 
-  return 'ErrorIndeterminado'
+  // everything else failed, tell error couldn't be determined
+  return 'ErrorIndeterminado';
 }
 
 export default viemErrorProcessing

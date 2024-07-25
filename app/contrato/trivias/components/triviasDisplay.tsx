@@ -7,10 +7,9 @@
 //  */
 
 'use client'
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import {
   addSolvedTriviaToContract,
-  getEthereumProvider,
 } from '@/app/lib/blockchain-functions'
 import ScoreTrivias from '@/app/contrato/trivias/components/scoreTrivias'
 import { OptionAnswersType, solvedTriviasType } from '@/app/types/triviaTypes'
@@ -30,10 +29,8 @@ const MAX_TRIVIAS = Trivias.length
 
 const TriviasDisplay = ({
   address,
-  setAddress,
 }: {
   address: string | undefined
-  setAddress: SetterFunction<string | undefined>
 }) => {
   // we initiate Trivia index on the first one but this will be changed by ScoreTrivia component at loading time
   const [currentTriviaIndex, setCurrentTriviaIndex] = useState<number>(0)
@@ -61,7 +58,6 @@ const TriviasDisplay = ({
     if (!address) {
       return
     } // wait till there is a valid address
-    console.log('UseEffect - solvedTrivias updated')
     if (!(MAX_TRIVIAS - solvedTrivias.length)) {
       setCurrentTriviaIndex(0)
       return
@@ -74,7 +70,6 @@ const TriviasDisplay = ({
   // this is called from ScoreTrivia
   const updateSolvedTrivias = useCallback(
     async (solvedTrivias: solvedTriviasType) => {
-      console.log('updateSolvedTrivias callback called')
       setSolvedTrivias(solvedTrivias)
       setUnsolvedNumberTrivias(MAX_TRIVIAS - solvedTrivias.length)
       setRefreshTriviasSolved(false)
@@ -88,11 +83,6 @@ const TriviasDisplay = ({
   ) => {
     try {
       // Implementa la lógica para agregar la trivia resuelta al contrato
-      console.log(
-        '%cEjecutando assessTriviaContract!',
-        'background: yellow; color: red; font-weight: bold;'
-      )
-
       setWaiting(true)
       const result = await addSolvedTriviaToContract(
         selectedOptionsArray,
@@ -109,7 +99,6 @@ const TriviasDisplay = ({
       }
       // success, trigger update of score
       setRefreshTriviasSolved(true) // triggers reading trivias from contract in scoreTrivia component
-      // Actualiza la trivia actual si es necesario AQUI CHECAR SI PROX TRIVIA YA FUE RESUELTA
     } catch (error) {
       console.error('Error al resolver la trivia:', error)
     } finally {
@@ -173,8 +162,8 @@ const TriviasDisplay = ({
           />
         </div>
       ) : (
-        <div>
-          <PairTitleText title="No hay mas Trivias sin resolver" text="" />
+        <div className=" md:w-[750px] md:border-r-2 border-b-2 md:border-b-0 p-16" >
+          <PairTitleText title="No hay Trivias sin resolver" text="" />
         </div>
       )}
       <div
