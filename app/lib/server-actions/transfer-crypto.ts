@@ -21,7 +21,6 @@ export const transferCrypto = async (
   const serverAccount = privateKeyToAccount(
     `0x${process.env.PVTE_ACCOUNT_SERVER}`
   )
-
   const walletClient = createWalletClient({
     account: serverAccount,
     chain: polygonAmoy,

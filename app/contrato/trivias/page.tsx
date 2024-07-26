@@ -30,23 +30,12 @@ export default function PageIndex() {
 
     getAccount()
 
-    if (typeof window?.ethereum?.on === 'function') {
-      window.ethereum.on('accountsChanged', handleAccountsChanged)
-    }
-    return () => {
-      if (typeof window?.ethereum?.removeListener === 'function') {
-        window.ethereum.removeListener!(
-          'accountsChanged',
-          handleAccountsChanged
-        )
-      }
-    }
   }, [])
 
   if (!account) {
     return (
-      <div>
-        loading....
+      <div className="flex h-screen justify-center items-center">
+        Cargando... espere pof favor
       </div>
     )
   }

@@ -15,13 +15,12 @@ import { OptionAnswersType } from '@/app/types/triviaTypes'
 import { contractAddress } from '@/app/lib/contractAddres'
 import triviaABI from '@/app/lib/triviaContract.json'
 import {
-  EthereumProvider,
-  ProviderResult,
-  errorProvider,
   publicClientTypeResult,
   AccountResponse,
 } from '@/app/types/web3Types'
 import viemErrorProcessing from './viemErrorProcessing'
+import { gasPrices } from './server-actions/getGasPrices'
+
 
 
 
@@ -53,42 +52,43 @@ export const getWalletAccount = async (): Promise<AccountResponse> => {
   }
 }
 
-/**
- * getEthereumProvider
- *  *      - check and gets account through window.ethereum object
- * @returns object { status: false, error: string } | { status: true, account: accounts[0] }
-  */
-export const getEthereumProvider = async (): Promise<ProviderResult> => {
-  if (typeof window === 'undefined' || !window.ethereum) {
-    return {
-      status: false,
-      error: 'NoWallet',
-    }
-  }
-  const provider = window.ethereum as EthereumProvider
-  try {
-    const accounts = await provider.request({
-      method: 'eth_requestAccounts',
-    })
+// /**
+//  * getEthereumProvider
+//  *  *      - check and gets account through window.ethereum object
+//  * @returns object { status: false, error: string } | { status: true, account: accounts[0] }
+//   */
+// export const getEthereumProvider = async (): Promise<ProviderResult> => {
+//   console.log('getEthereumProvider:', typeof window)
+//   if (typeof window === 'undefined' || !window.ethereum) {
+//     return {
+//       status: false,
+//       error: 'NoWallet',
+//     }
+//   }
+//   const provider = window.ethereum as EthereumProvider
+//   try {
+//     const accounts = await provider.request({
+//       method: 'eth_requestAccounts',
+//     })
 
-    if (accounts && accounts.length > 0) {
-      return { status: true, account: accounts[0] }
-    } else {
-      return {
-        status: false,
-        error: 'UnknownError',
-      }
-    }
-  } catch (error) {
-    if (error instanceof Error) {
-      if (error.message.includes('User rejected')) {
-        return { status: false, error: 'UserRejected' }
-      }
-      return { status: false, error: 'UnknownError' }
-    }
-    return { status: false, error: 'UnknownError' }
-  }
-}
+//     if (accounts && accounts.length > 0) {
+//       return { status: true, account: accounts[0] }
+//     } else {
+//       return {
+//         status: false,
+//         error: 'UnknownError',
+//       }
+//     }
+//   } catch (error) {
+//     if (error instanceof Error) {
+//       if (error.message.includes('User rejected')) {
+//         return { status: false, error: 'UserRejected' }
+//       }
+//       return { status: false, error: 'UnknownError' }
+//     }
+//     return { status: false, error: 'UnknownError' }
+//   }
+// }
 
 const getPublicClient = (): publicClientTypeResult => {
   if (!(typeof window !== 'undefined' && window.ethereum))
@@ -174,8 +174,17 @@ export const addSolvedTriviaToContract = async (
     const [account] = await walletClient.getAddresses()
     const proposedSolution = triviaIndex.toString() + answers.join('')
     // Get current  gas values MaxFeePerGas and maxPriorityFeePerGas 15% and increment them because this is a demo on polygonAmoy and we want TX to pass as safely and quickest as it could
-    const { maxFeePerGas, maxPriorityFeePerGas } =   await walletClient.estimateFeesPerGas({ chain: polygonAmoy })
-    console.log('maxFeePerGas, maxPriorityFeePerGas',maxFeePerGas, maxPriorityFeePerGas)
+    const gasResult= await gasPrices()
+    let maxFeePerGas, maxPriorityFeePerGas
+    // const temp = await walletClient.estimateFeesPerGas({ chain: polygonAmoy })
+    // console.log('gas de metamask:', temp)
+    if (!gasResult.status) {
+      // something went wrong, resort to metamask values, this could cause warning problems so it is no prefered method
+       ({ maxFeePerGas, maxPriorityFeePerGas } =   await walletClient.estimateFeesPerGas({ chain: polygonAmoy }))
+      }
+      else {
+       ({ maxFeePerGas, maxPriorityFeePerGas } = gasResult)
+      }
     const increasedGasEstimate = BigInt(Math.ceil(Number(maxFeePerGas) * 1.15))
     const increasedMaxPriorityFeePerGas = BigInt( Math.ceil(Number(maxPriorityFeePerGas) * 1.15))
     // simulate contract op. This will trigger error if there is a problem saving time
