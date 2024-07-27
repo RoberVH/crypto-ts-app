@@ -1,9 +1,11 @@
 
 import { inter } from '@/app/ui/fonts'
 import "@/app/globals.css";
+import Image from 'next/image';
 import  Header from '@/app/components/header'
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+import Link from 'next/link';
 
 
 
@@ -15,11 +17,27 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-         <Header/>
-         <ToastContainer />
-        {children}
-        </body>
+      <body className={`${inter.className} flex flex-col  min-h-screen`}>
+        <Header />
+        <main className="flex-grow w-full">
+          <ToastContainer />
+          {children}
+        </main>
+        <footer className="w-full py-2">
+          <p className="text-xs inset flex items-center justify-center">
+          <Image
+              src="/x.svg"
+              alt="X (Twitter) icon"
+              width={16}
+              height={16}
+              className="mr-2"
+            />
+            <Link href='https://x.com/RoberVH' target="_blank" rel="noopener noreferrer">
+            Roberto Vicuña | rovicher.eth | ©2024
+            </Link>
+            </p>
+        </footer>
+      </body>
     </html>
   );
 }
