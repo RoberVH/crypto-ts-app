@@ -1,5 +1,5 @@
 /**
- * Functions in this file use  viem ^2.17.4 and browser native object window.ethereum 
+ * Functions in this file use  viem ^2.17.4 and browser native object window.ethereum
  */
 
 import {
@@ -14,15 +14,9 @@ import { polygonAmoy, sepolia } from 'viem/chains'
 import { OptionAnswersType } from '@/app/types/triviaTypes'
 import { contractAddress } from '@/app/lib/contractAddres'
 import triviaABI from '@/app/lib/triviaContract.json'
-import {
-  publicClientTypeResult,
-  AccountResponse,
-} from '@/app/types/web3Types'
+import { publicClientTypeResult, AccountResponse } from '@/app/types/web3Types'
 import viemErrorProcessing from './viemErrorProcessing'
 import { gasPrices } from './server-actions/getGasPrices'
-
-
-
 
 /**
  * getWalletAccount
@@ -51,7 +45,6 @@ export const getWalletAccount = async (): Promise<AccountResponse> => {
     return { status: false, error: viemErrorProcessing(err) }
   }
 }
-
 
 const getPublicClient = (): publicClientTypeResult => {
   if (!(typeof window !== 'undefined' && window.ethereum))
@@ -109,8 +102,6 @@ export const getTokensTriviasTTS = async (address: string) => {
   }
 }
 
-
-
 /**
  * addSolvedTriviaToContract  - Receive user proposed answer to Trivia
  *                        send answer to contract and detect if revert with AnsweredIncorrect err
@@ -137,17 +128,19 @@ export const addSolvedTriviaToContract = async (
     const [account] = await walletClient.getAddresses()
     const proposedSolution = triviaIndex.toString() + answers.join('')
     // Get current  gas values MaxFeePerGas and maxPriorityFeePerGas 15% and increment them because this is a demo on polygonAmoy | sepolia and we want TX to pass as safely and quickest as it could
-    const gasResult= await gasPrices()
+    const gasResult = await gasPrices()
     let maxFeePerGas, maxPriorityFeePerGas
     if (!gasResult.status) {
       // something went wrong, resort to metamask values, this could cause warning problems so it is no prefered method
-       ({ maxFeePerGas, maxPriorityFeePerGas } =   await walletClient.estimateFeesPerGas({ chain: polygonAmoy }))
-      }
-      else {
-       ({ maxFeePerGas, maxPriorityFeePerGas } = gasResult)
-      }
+      ;({ maxFeePerGas, maxPriorityFeePerGas } =
+        await walletClient.estimateFeesPerGas({ chain: polygonAmoy }))
+    } else {
+      ;({ maxFeePerGas, maxPriorityFeePerGas } = gasResult)
+    }
     const increasedGasEstimate = BigInt(Math.ceil(Number(maxFeePerGas) * 1.15))
-    const increasedMaxPriorityFeePerGas = BigInt( Math.ceil(Number(maxPriorityFeePerGas) * 1.15))
+    const increasedMaxPriorityFeePerGas = BigInt(
+      Math.ceil(Number(maxPriorityFeePerGas) * 1.15)
+    )
     // simulate contract op. This will trigger error if there is a problem saving time
     // Curiously, even tho docs for current 2.17.11 says this function take maxFeePerGas and maxPriorityFeePerGas props, if added cause a bizarre error of contract execution error
     await walletClient.simulateContract({
@@ -156,23 +149,34 @@ export const addSolvedTriviaToContract = async (
       functionName: 'scoreAnswer',
       args: [triviaIndex, proposedSolution],
       account,
-    })      
-     // all ok, send it away     
-    hash = await walletClient.writeContract(      {
+    })
+
+    // all ok, send it away
+    hash = await walletClient.writeContract({
       address: contractAddress,
       abi: triviaABI,
       functionName: 'scoreAnswer',
       args: [triviaIndex, proposedSolution],
       account,
-      maxFeePerGas:increasedGasEstimate,
-      maxPriorityFeePerGas:increasedMaxPriorityFeePerGas
+      maxFeePerGas: increasedGasEstimate,
+      maxPriorityFeePerGas: increasedMaxPriorityFeePerGas,
     })
-      // we'll wait for it, to show users an operation similar to web2 apps
-    const transaction = await walletClient.waitForTransactionReceipt({ hash })
+    // we'll wait for it, to show users an operation similar to web2 apps
+
+    const transaction = await walletClient.waitForTransactionReceipt({
+      hash,
+      // to test long operations that timeout and therefore app has to show hash wth link to follow TX
+      // pollingInterval: 1_000,
+      // retryDelay: 1_000,
+      // retryCount: 1, 
+      // timeout: 1_000
+
+    }) // 
+
     return { status: true }
   } catch (error) {
     const errMsg = viemErrorProcessing(error)
-    console.log('errMsg',errMsg)
+    console.log('errMsg', errMsg)
     return { status: false, error: errMsg, hash }
   }
 }

@@ -26,6 +26,7 @@ function FaucetPage() {
       setUserAddress(result.account)
       //are we on the right network?
       const networkChecked = await blockchainDetection()
+      console.log('En faucet volviendo del blockchain detectrion', networkChecked)
       if (!networkChecked.status) {
           toastError(networkChecked.error)
           toastWarning('No podrá verificar transferencia hasta no cambiar a la Blockchain correcta a la billetera')

@@ -21,6 +21,7 @@ export const errorMessages: ErrorMessages = {
     "ContractFunctionExecutionError":"Error en la ejecución del contrato",
     "ContractFunctionRevertedError":"El Contrato rechazó la transacción",
     "NoRightNetwork":"Red Blockchain incorrecta",
+    "SwitchChainError":"No pude cambiar de blockchain",
   // Aplication errors
     "incompleteAnswers":"Incompleto. Necesita contestar todas las preguntas de esta Trivia",
     "AnsweredIncorrect":"Su respuesta a la Trivia es incorrecta, vuelva a intentarlo"
