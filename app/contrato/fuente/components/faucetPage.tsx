@@ -1,24 +1,36 @@
 'use client'
 import { toastError } from '@/app/lib/errormsg'
 
-import { useState } from 'react'
+import {  useState } from 'react'
 import { transferCrypto } from '@/app/lib/server-actions/transfer-crypto'
 import { toastSuccess } from '@/app/lib/successmsg'
 
 import WaitModal from '@/app/ui/waitModal'
 import { getWalletAccount } from '@/app/lib/blockchain-functions'
+import { blockchainDetection } from '@/app/lib/blockchainDetection'
+import { toast } from 'react-toastify'
+import { toastWarning } from '@/app/lib/toastWarning'
 
 function FaucetPage() {
   const [userAddress, setUserAddress] = useState<string>('')
   const [processingTx, setPprocessingTx] = useState<boolean>(false)
+  const [correctChain, setCorrectChain] = useState<boolean>(false)
 
+ 
 
   const getAccountToSendEthers = async () => {
     const result = await getWalletAccount()
     if (!result.status) {
       toastError(result.error)
-    } else  
-        setUserAddress(result.account)
+    } else{ 
+      setUserAddress(result.account)
+      //are we on the right network?
+      const networkChecked = await blockchainDetection()
+      if (!networkChecked.status) {
+          toastError(networkChecked.error)
+          toastWarning('No podrá verificar transferencia hasta no cambiar a la Blockchain correcta a la billetera')
+      } 
+    }
   }
 
   const sendCrypto = async () => {

@@ -51,3 +51,5 @@ export type TransferFunction = TransferSucces | TransferFail
 
 export type AccountResponse = {  status: true,   account: string} | { status: false,   error: string}
 
+export type generalFunctioResponse = {status: true} | { status: false,   error: string}
+

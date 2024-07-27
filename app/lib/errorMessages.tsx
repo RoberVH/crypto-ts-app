@@ -19,7 +19,8 @@ export const errorMessages: ErrorMessages = {
     "UserRejectedRequestError":"Usuario rechazó la solicitud",
     "WaitForTransactionReceiptTimeoutError":"La transaccion tardó demasiado, sigue pendiente",
     "ContractFunctionExecutionError":"Error en la ejecución del contrato",
-    'ContractFunctionRevertedError':"El Contrato rechazó la transacción",
+    "ContractFunctionRevertedError":"El Contrato rechazó la transacción",
+    "NoRightNetwork":"Red Blockchain incorrecta",
   // Aplication errors
     "incompleteAnswers":"Incompleto. Necesita contestar todas las preguntas de esta Trivia",
     "AnsweredIncorrect":"Su respuesta a la Trivia es incorrecta, vuelva a intentarlo"

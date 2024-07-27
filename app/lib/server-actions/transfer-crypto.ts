@@ -1,7 +1,5 @@
 'use server'
 import {
-  BaseError,
-  ContractFunctionRevertedError,
   createWalletClient,
   http,
 } from 'viem'
@@ -11,7 +9,7 @@ import { publicClient } from '@/app/lib/client'
 
 import triviaABI from '@/app/lib/triviaContract.json'
 import { contractAddress } from '@/app/lib/contractAddres'
-import { polygonAmoy } from 'viem/chains'
+import { polygonAmoy, sepolia } from 'viem/chains'
 import viemErrorProcessing from '../viemErrorProcessing'
 import { TransferFunction } from '@/app/types/web3Types'
 
@@ -43,7 +41,7 @@ export const transferCrypto = async (
     const receipt = await publicClient.waitForTransactionReceipt({ hash })
     return { status: true, hash: receipt.transactionHash }
   } catch (err) {
-    const result =  viemErrorProcessing(err)
-    return {status: false, error: result}
+    const result = viemErrorProcessing(err)
+    return { status: false, error: result }
   }
 }

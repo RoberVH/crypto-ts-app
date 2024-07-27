@@ -72,7 +72,8 @@ export default function ScoreTrivias({
           Tu Score:
         </p>
         <div className="ml-4">
-          <PairTitleText title="Tokens: " text={`${tokens} tokens`} />
+        <PairTitleText title="Cuenta: " text={`${address}`} />
+        <PairTitleText title="Tokens: " text={`${tokens} tokens`} />
           <PairTitleText title="Contrato: " text={contractAddress} />
 
           <p className="font-semibold text-xs my-2 md:my-4">

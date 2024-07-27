@@ -9,7 +9,7 @@ import {
   createPublicClient,
   publicActions,
 } from 'viem'
-import { polygonAmoy } from 'viem/chains'
+import { polygonAmoy, sepolia } from 'viem/chains'
 
 import { OptionAnswersType } from '@/app/types/triviaTypes'
 import { contractAddress } from '@/app/lib/contractAddres'
@@ -52,43 +52,6 @@ export const getWalletAccount = async (): Promise<AccountResponse> => {
   }
 }
 
-// /**
-//  * getEthereumProvider
-//  *  *      - check and gets account through window.ethereum object
-//  * @returns object { status: false, error: string } | { status: true, account: accounts[0] }
-//   */
-// export const getEthereumProvider = async (): Promise<ProviderResult> => {
-//   console.log('getEthereumProvider:', typeof window)
-//   if (typeof window === 'undefined' || !window.ethereum) {
-//     return {
-//       status: false,
-//       error: 'NoWallet',
-//     }
-//   }
-//   const provider = window.ethereum as EthereumProvider
-//   try {
-//     const accounts = await provider.request({
-//       method: 'eth_requestAccounts',
-//     })
-
-//     if (accounts && accounts.length > 0) {
-//       return { status: true, account: accounts[0] }
-//     } else {
-//       return {
-//         status: false,
-//         error: 'UnknownError',
-//       }
-//     }
-//   } catch (error) {
-//     if (error instanceof Error) {
-//       if (error.message.includes('User rejected')) {
-//         return { status: false, error: 'UserRejected' }
-//       }
-//       return { status: false, error: 'UnknownError' }
-//     }
-//     return { status: false, error: 'UnknownError' }
-//   }
-// }
 
 const getPublicClient = (): publicClientTypeResult => {
   if (!(typeof window !== 'undefined' && window.ethereum))
@@ -173,11 +136,9 @@ export const addSolvedTriviaToContract = async (
 
     const [account] = await walletClient.getAddresses()
     const proposedSolution = triviaIndex.toString() + answers.join('')
-    // Get current  gas values MaxFeePerGas and maxPriorityFeePerGas 15% and increment them because this is a demo on polygonAmoy and we want TX to pass as safely and quickest as it could
+    // Get current  gas values MaxFeePerGas and maxPriorityFeePerGas 15% and increment them because this is a demo on polygonAmoy | sepolia and we want TX to pass as safely and quickest as it could
     const gasResult= await gasPrices()
     let maxFeePerGas, maxPriorityFeePerGas
-    // const temp = await walletClient.estimateFeesPerGas({ chain: polygonAmoy })
-    // console.log('gas de metamask:', temp)
     if (!gasResult.status) {
       // something went wrong, resort to metamask values, this could cause warning problems so it is no prefered method
        ({ maxFeePerGas, maxPriorityFeePerGas } =   await walletClient.estimateFeesPerGas({ chain: polygonAmoy }))
@@ -211,6 +172,7 @@ export const addSolvedTriviaToContract = async (
     return { status: true }
   } catch (error) {
     const errMsg = viemErrorProcessing(error)
+    console.log('errMsg',errMsg)
     return { status: false, error: errMsg, hash }
   }
 }

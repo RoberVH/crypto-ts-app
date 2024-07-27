@@ -58,6 +58,7 @@ const TriviasDisplay = ({
     if (!address) {
       return
     } // wait till there is a valid address
+   
     if (!(MAX_TRIVIAS - solvedTrivias.length)) {
       setCurrentTriviaIndex(0)
       return
@@ -91,6 +92,7 @@ const TriviasDisplay = ({
       if (!result.status) {
         if (result.hash) {
           // Tx Timeout!, inform the user
+          console.log('hash', hash)
           setHash(result.hash)
           setPrompt(true)
           return
