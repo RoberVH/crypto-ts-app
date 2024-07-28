@@ -15,29 +15,17 @@ export const blockchainDetection =
           chain: polygonAmoy,
           transport: custom(window.ethereum),
         })
-        console.log('polling interval', walletClient.pollingInterval)
-        console.log(
-          'Que red tenemos?  - await walletClient.getChainId()',
-          await walletClient.getChainId()
-        )
         if ((await walletClient.getChainId()) !== polygonAmoy.id) {
           await walletClient.switchChain({ id: polygonAmoy.id })
         }
-        console.log('despues del switch', await walletClient.getChainId())
         return { status: true }
       } else return { status: false, error: 'NoWallet' }
     } catch (error) {
-      console.error(
-        'Error al verificar o cambiar la red en blockchain detector:',
-        error
-      )
-      if (viemErrorProcessing(error) === 'SwitchChainError') {
+      if (error instanceof Error  && error.name==='SwitchChainError')   {
         try {
-          console.log('en el try del catch intentando agregar chain')
           await walletClient.addChain({ chain: polygonAmoy })
           if ((await walletClient.getChainId()) !== polygonAmoy.id) {
             // network exist but was not selected
-            console.log('No fueron iguales')
             return { status: false, error: 'NoRightNetwork' }
           } else return { status: true }
         } catch (error) {

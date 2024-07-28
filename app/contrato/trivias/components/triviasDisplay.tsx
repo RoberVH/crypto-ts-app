@@ -92,7 +92,6 @@ const TriviasDisplay = ({
       if (!result.status) {
         if (result.hash) {
           // Tx Timeout!, inform the user
-          console.log('hash', hash)
           setHash(result.hash)
           setPrompt(true)
           return

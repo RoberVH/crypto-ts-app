@@ -32,7 +32,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               height={16}
               className="mr-2"
             />
-            <Link href='https://x.com/RoberVH' target="_blank" rel="noopener noreferrer">
+            <Link href='https://x.com/RoberVH' target="_blank" rel="noopener noreferrer"
+            >
             Roberto Vicuña | rovicher.eth | ©2024
             </Link>
             </p>
