@@ -30,7 +30,9 @@ yarn build
 
 yarn start
 ```
-## Despliegue en Vercel
+## Código
 
-Ver app desplegada en: https://introblockchain.vercel.app/
+- [Aplicación](https://introblockchain.vercel.app/)
+- [Código de la App](https://github.com/RoberVH/crypto-ts-app)
+- [Código de Contrato](https://github.com/RoberVH/trivias-contract-solidity)
 

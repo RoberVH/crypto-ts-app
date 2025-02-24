@@ -169,9 +169,9 @@ export const addSolvedTriviaToContract = async (
       // pollingInterval: 1_000,
       // retryDelay: 1_000,
       // retryCount: 1, 
-      // timeout: 1_000
+       //timeout: 1_000
 
-    }) // 
+    })  
 
     return { status: true }
   } catch (error) {

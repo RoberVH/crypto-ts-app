@@ -40,7 +40,6 @@ export default function ScoreTrivias({
         ])
         if (results[0].status && results[1].status) {
           updateSolvedTrivias(results[0].triviasSolved as solvedTriviasType)
-
           // Receive a BigInt on balance
           const balanceBigNumber: bigint = results[1].balance as bigint
           const formattedBalance = formatUnits(balanceBigNumber, 18)

@@ -23,20 +23,46 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ToastContainer />
           {children}
         </main>
-        <footer className="w-full py-2">
-          <p className="text-xs inset flex items-center justify-center">
+        <footer className="w-full py-2  text-xs inset space-y-2">
+          <div className="flex justify-center space-x-2">
+          <img
+            src="/github-mark.svg" 
+            alt="GitHub Logo"
+            width={16} 
+            height={16} 
+          />
+            <Link  href='https://github.com/RoberVH/trivias-contract-solidity' target="_blank" rel="noopener noreferrer" className="flex items-center">
+              <span className="underline">Contrato</span>
+            </Link>
+            <Link  href='https://github.com/RoberVH/crypto-ts-app' target="_blank" rel="noopener noreferrer" className="flex items-center">
+            <span className="underline">Aplicación</span>
+            </Link>
+          </div>
+          <div className=" flex items-center justify-center">
+
+          <Link href='https://x.com/RoberVH' target="_blank" rel="noopener noreferrer" className="flex items-center">
           <Image
               src="/x.svg"
               alt="X (Twitter) icon"
               width={16}
               height={16}
-              className="mr-2"
-            />
-            <Link href='https://x.com/RoberVH' target="_blank" rel="noopener noreferrer"
-            >
-            Roberto Vicuña | rovicher.eth | ©2024
-            </Link>
-            </p>
+              className="mr-2 flex items-center"
+              />
+          </Link>
+          <Link href='https://www.linkedin.com/in/roberto-vicuna/' target="_blank" rel="noopener noreferrer" className="flex items-center">
+          <Image
+              src="/linkedin.svg"
+              alt="LinkedIn icon"
+              width={15}
+              height={15}
+              className="mr-2 flex items-center"
+          />
+          </Link>
+            <span className="">
+              Roberto Vicuña 
+            </span>
+            <span>| rovicher.eth | ©2024</span>
+          </div>
         </footer>
       </body>
     </html>
